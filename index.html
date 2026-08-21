@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>یک سؤال برای تو ❤️</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffe5ec, #fff);
+      font-family: Tahoma, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      width: min(90%, 500px);
+      text-align: center;
+      background: rgba(255,255,255,0.9);
+      padding: 40px 25px;
+      border-radius: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      color: #e63956;
+      font-size: 26px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #444;
+      font-size: 20px;
+      line-height: 2;
+    }
+
+    button {
+      border: none;
+      background: #e63956;
+      color: white;
+      padding: 15px 35px;
+      border-radius: 50px;
+      font-size: 19px;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 5px 20px rgba(230,57,86,0.3);
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    #heartArea {
+      margin-top: 25px;
+      height: 300px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    svg {
+      width: 260px;
+      height: 260px;
+      overflow: visible;
+    }
+
+    #heart {
+      fill: none;
+      stroke: #e63956;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+
+      /*
+        طول مسیر قلب حدوداً 1000 است.
+        این دو مقدار باعث می‌شوند ابتدا قلب دیده نشود
+        و سپس طی 20 ثانیه کامل کشیده شود.
+      */
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+
+    .success {
+      color: #e63956;
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    .show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>❤️ یه سؤال برای تو ❤️</h1>
+
+    <p>
+      اگه با حمید موافقی،<br>
+      دکمه‌ی زیر رو کلیک کن
+    </p>
+
+    <button id="agreeButton" onclick="drawHeart()">
+      موافقم ❤️
+    </button>
+
+    <div id="heartArea">
+      <svg viewBox="0 0 300 300">
+
+        <!-- قلب -->
+        <path
+          id="heart"
+          d="
+          M150 260
+          C135 245, 55 190, 55 115
+          C55 65, 105 45, 135 75
+          C145 85, 150 100, 150 100
+          C150 100, 155 85, 165 75
+          C195 45, 245 65, 245 115
+          C245 190, 165 245, 150 260
+          Z
+          "
+        />
+
+      </svg>
+    </div>
+
+    <div id="message" class="success">
+      ❤️ ممنون که موافقی ❤️
+    </div>
+
+  </div>
+
+  <script>
+    function drawHeart() {
+
+      const button = document.getElementById("agreeButton");
+      const heartArea = document.getElementById("heartArea");
+      const heart = document.getElementById("heart");
+      const message = document.getElementById("message");
+
+      // جلوگیری از کلیک دوباره
+      button.disabled = true;
+      button.innerText = "در حال کشیدن قلب... ❤️";
+
+      // نمایش قلب
+      heartArea.style.display = "flex";
+
+      // تنظیم دوباره انیمیشن
+      heart.style.animation = "none";
+      heart.offsetHeight;
+
+      // کشیده شدن قلب طی 20 ثانیه
+      heart.style.animation = "draw 20s linear forwards";
+
+      // بعد از تمام شدن انیمیشن
+      setTimeout(() => {
+
+        message.classList.add("show");
+
+        button.innerText = "❤️";
+
+      }, 20000);
+    }
+
+    // انیمیشن رسم قلب
+    const style = document.createElement("style");
+
+    style.innerHTML = `
+      @keyframes draw {
+        from {
+          stroke-dashoffset: 1000;
+        }
+
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+  </script>
+
+</body>
+</html>
