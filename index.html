@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>یه سؤال برای تو</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffe4ec, #fff);
+      font-family: Tahoma, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      width: min(92%, 500px);
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      padding: 40px 25px;
+      border-radius: 28px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      color: #e63956;
+      font-size: 27px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #444;
+      font-size: 20px;
+      line-height: 2;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    button {
+      border: none;
+      color: white;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #yesButton {
+      background: #e63956;
+      box-shadow: 0 5px 20px rgba(230,57,86,0.3);
+    }
+
+    #noButton {
+      background: #777;
+    }
+
+    button:hover {
+      transform: scale(1.06);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    #heartArea {
+      margin-top: 20px;
+      height: 310px;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    svg {
+      width: 280px;
+      height: 280px;
+      overflow: visible;
+    }
+
+    #heart {
+      fill: #e63956;
+      stroke: #e63956;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+    }
+
+    #heartText {
+      font-size: 17px;
+      font-weight: bold;
+      fill: #ffd166;
+      opacity: 0;
+    }
+
+    #noMessage {
+      display: none;
+      margin-top: 30px;
+      font-size: 23px;
+      font-weight: bold;
+      color: #e63956;
+      animation: appear 0.8s ease forwards;
+    }
+
+    @keyframes draw {
+      from {
+        stroke-dashoffset: 1000;
+      }
+
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: scale(0.7);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes textAppear {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>یه سؤال برای تو</h1>
+
+    <p>
+      اگه با حمید موافقی،<br>
+      یکی از دکمه‌های زیر رو انتخاب کن
+    </p>
+
+    <div class="buttons">
+
+      <button id="yesButton" onclick="drawHeart()">
+        موافقم
+      </button>
+
+      <button id="noButton" onclick="sayNo()">
+        نه
+      </button>
+
+    </div>
+
+    <!-- پیام دکمه نه -->
+    <div id="noMessage">
+      اینجا حرف حرف حمیده 😌
+    </div>
+
+    <!-- قلب -->
+    <div id="heartArea">
+
+      <svg viewBox="0 0 300 300">
+
+        <path
+          id="heart"
+          d="
+          M150 260
+          C135 245, 55 190, 55 115
+          C55 65, 105 45, 135 75
+          C145 85, 150 100, 150 100
+          C150 100, 155 85, 165 75
+          C195 45, 245 65, 245 115
+          C245 190, 165 245, 150 260
+          Z
+          "
+        />
+
+        <text
+          id="heartText"
+          x="150"
+          y="145"
+          text-anchor="middle">
+          خب پس
+        </text>
+
+        <text
+          id="heartText2"
+          x="150"
+          y="170"
+          text-anchor="middle">
+          راز و تخریب کن
+        </text>
+
+      </svg>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    function drawHeart() {
+
+      const yesButton = document.getElementById("yesButton");
+      const noButton = document.getElementById("noButton");
+      const heartArea = document.getElementById("heartArea");
+      const heart = document.getElementById("heart");
+      const heartText = document.getElementById("heartText");
+      const heartText2 = document.getElementById("heartText2");
+      const noMessage = document.getElementById("noMessage");
+
+      // دکمه‌ها غیرفعال شوند
+      yesButton.disabled = true;
+      noButton.disabled = true;
+
+      // پیام نه مخفی شود
+      noMessage.style.display = "none";
+
+      // قلب نمایش داده شود
+      heartArea.style.display = "flex";
+
+      // شروع انیمیشن از اول
+      heart.style.animation = "none";
+      heart.offsetHeight;
+
+      // کشیده شدن قلب طی 10 ثانیه
+      heart.style.animation = "draw 10s linear forwards";
+
+      // بعد از 10 ثانیه
+      setTimeout(() => {
+
+        // قلب کامل شده
+        heart.style.strokeDashoffset = "0";
+
+        // نمایش نوشته داخل قلب
+        heartText.style.animation =
+          "textAppear 1s ease forwards";
+
+        heartText2.style.animation =
+          "textAppear 1s ease forwards";
+
+      }, 10000);
+    }
+
+
+    function sayNo() {
+
+      const yesButton = document.getElementById("yesButton");
+      const noButton = document.getElementById("noButton");
+      const noMessage = document.getElementById("noMessage");
+
+      // دکمه نه همون‌جا می‌مونه
+      yesButton.disabled = true;
+      noButton.disabled = true;
+
+      // پیام را نمایش بده
+      noMessage.style.display = "block";
+    }
+
+  </script>
+
+</body>
+</html>
