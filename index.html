@@ -3,28 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>همچنان برای چشات ❤️</title>
 
 <style>
-
 *{
   box-sizing:border-box;
 }
 
-html,
-body{
+html,body{
   margin:0;
   width:100%;
   height:100%;
   overflow:hidden;
-  background:#070711;
+  background:#080711;
 }
 
 body{
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
 canvas{
@@ -34,51 +31,39 @@ canvas{
   height:100%;
 }
 
-.text{
+.message{
   position:fixed;
+  z-index:10;
   top:7%;
-  left:0;
   width:100%;
   text-align:center;
 
   color:white;
-
-  font-family:
-    Tahoma,
-    Arial,
-    sans-serif;
-
-  font-size:
-    clamp(22px,5vw,40px);
+  font-family:Tahoma,Arial,sans-serif;
+  font-size:clamp(22px,5vw,40px);
 
   text-shadow:
-    0 0 8px #ff4d88,
-    0 0 18px #ff174f,
+    0 0 8px #ff4c88,
+    0 0 20px #ff174f,
     0 0 35px #ff174f;
 
   animation:pulse 2.5s infinite;
-
-  z-index:10;
 }
 
 @keyframes pulse{
-
   0%,100%{
     transform:scale(1);
   }
-
   50%{
     transform:scale(1.06);
   }
-
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="text">
+<div class="message">
   همچنان برای چشات ❤️
 </div>
 
@@ -87,49 +72,42 @@ canvas{
 <script>
 
 const canvas =
-  document.getElementById("canvas");
+document.getElementById("canvas");
 
 const ctx =
-  canvas.getContext("2d");
+canvas.getContext("2d");
 
-let W;
-let H;
+let W,H;
 
 function resize(){
 
-  W = canvas.width =
-    window.innerWidth;
-
-  H = canvas.height =
-    window.innerHeight;
+  W=canvas.width=innerWidth;
+  H=canvas.height=innerHeight;
 
 }
+
+resize();
 
 window.addEventListener(
   "resize",
   resize
 );
 
-resize();
 
-
-/* =========================
-   مسیر ریاضی قلب
-========================= */
+/* =================================
+   قلب ریاضی
+================================= */
 
 function heart(t){
 
-  const x =
-    16 * Math.pow(
-      Math.sin(t),
-      3
-    );
+  const x=
+    16*Math.pow(Math.sin(t),3);
 
-  const y =
-    13 * Math.cos(t)
-    - 5 * Math.cos(2*t)
-    - 2 * Math.cos(3*t)
-    - Math.cos(4*t);
+  const y=
+    13*Math.cos(t)
+    -5*Math.cos(2*t)
+    -2*Math.cos(3*t)
+    -Math.cos(4*t);
 
   return {
     x:x,
@@ -139,141 +117,97 @@ function heart(t){
 }
 
 
-/* =========================
-   تبدیل مسیر به صفحه
-========================= */
+/* =================================
+   تبدیل به مختصات صفحه
+================================= */
 
-function getPoint(
-  t,
-  scale
-){
+function getPoint(t,scale){
 
-  const p =
-    heart(t);
+  const p=heart(t);
 
   return {
 
-    x:
-      W / 2 +
-      p.x * scale,
+    x:W/2+p.x*scale,
 
-    y:
-      H / 2 +
-      p.y * scale
+    y:H/2+p.y*scale
 
   };
 
 }
 
 
-/* =========================
-   ستاره‌های پس‌زمینه
-========================= */
+/* =================================
+   پس زمینه
+================================= */
 
 const stars=[];
 
-for(
-  let i=0;
-  i<120;
-  i++
-){
+for(let i=0;i<120;i++){
 
   stars.push({
 
-    x:
-      Math.random() *
-      window.innerWidth,
+    x:Math.random()*W,
 
-    y:
-      Math.random() *
-      window.innerHeight,
+    y:Math.random()*H,
 
-    size:
-      Math.random()*2+0.3,
+    r:.3+Math.random()*1.8,
 
-    phase:
-      Math.random() *
-      Math.PI*2
+    phase:Math.random()*Math.PI*2
 
   });
 
 }
 
-
-/* =========================
-   قلب‌های کوچک شناور
-========================= */
 
 const floatingHearts=[];
 
-for(
-  let i=0;
-  i<25;
-  i++
-){
+for(let i=0;i<28;i++){
 
   floatingHearts.push({
 
-    x:
-      Math.random()*window.innerWidth,
+    x:Math.random()*W,
 
-    y:
-      Math.random()*window.innerHeight,
+    y:Math.random()*H,
 
-    size:
-      4+
-      Math.random()*10,
+    size:4+Math.random()*10,
 
-    speed:
-      .15+
-      Math.random()*.45,
+    speed:.15+Math.random()*.45,
 
-    phase:
-      Math.random()*6
+    phase:Math.random()*10
 
   });
 
 }
 
 
-/* =========================
-   پس‌زمینه
-========================= */
+function background(){
 
-function drawBackground(){
-
-  const gradient =
+  const g=
     ctx.createRadialGradient(
-
       W/2,
       H*.45,
-      10,
-
+      20,
       W/2,
       H*.45,
       Math.max(W,H)*.75
-
     );
 
-
-  gradient.addColorStop(
+  g.addColorStop(
     0,
     "#35152f"
   );
 
-  gradient.addColorStop(
-    .4,
+  g.addColorStop(
+    .45,
     "#171025"
   );
 
-  gradient.addColorStop(
+  g.addColorStop(
     1,
     "#05050b"
   );
 
-
-  ctx.fillStyle =
-    gradient;
+  ctx.fillStyle=g;
 
   ctx.fillRect(
     0,
@@ -283,102 +217,75 @@ function drawBackground(){
   );
 
 
-  /* ستاره‌ها */
+  stars.forEach(s=>{
 
-  stars.forEach(
-    star=>{
+    s.phase+=.015;
 
-      star.phase += .015;
+    const a=
+      .25+
+      Math.sin(s.phase)*.2;
 
-      const alpha =
-        .25 +
-        Math.sin(
-          star.phase
-        )*.2;
+    ctx.beginPath();
 
+    ctx.arc(
+      s.x,
+      s.y,
+      s.r,
+      0,
+      Math.PI*2
+    );
 
-      ctx.beginPath();
+    ctx.fillStyle=
+      `rgba(255,140,190,${a})`;
 
-      ctx.arc(
-        star.x,
-        star.y,
-        star.size,
-        0,
-        Math.PI*2
-      );
+    ctx.fill();
 
-      ctx.fillStyle =
-        `rgba(255,130,190,${alpha})`;
-
-      ctx.fill();
-
-    }
-  );
+  });
 
 }
 
 
-/* =========================
-   رسم قلب‌های کوچک
-========================= */
+/* =================================
+   قلب های کوچک
+================================= */
 
-function drawSmallHeart(
-  x,
-  y,
-  size
-){
+function smallHeart(x,y,s){
 
   ctx.save();
 
-  ctx.translate(
-    x,
-    y
-  );
-
+  ctx.translate(x,y);
 
   ctx.beginPath();
 
   ctx.moveTo(
     0,
-    size*.4
+    s*.4
   );
-
 
   ctx.bezierCurveTo(
-
-    -size,
-    -size*.25,
-
-    -size*.7,
-    -size,
-
+    -s,
+    -s*.25,
+    -s*.7,
+    -s,
     0,
-    -size*.4
-
+    -s*.4
   );
-
 
   ctx.bezierCurveTo(
-
-    size*.7,
-    -size,
-
-    size,
-    -size*.25,
-
+    s*.7,
+    -s,
+    s,
+    -s*.25,
     0,
-    size*.4
-
+    s*.4
   );
 
+  ctx.fillStyle=
+    "rgba(255,65,135,.22)";
 
-  ctx.fillStyle =
-    "rgba(255,70,140,.22)";
+  ctx.shadowBlur=12;
 
-  ctx.shadowBlur=10;
-
-  ctx.shadowColor=
-    "#ff267d";
+  ctx.shadowColor="#ff267d";
 
   ctx.fill();
 
@@ -389,90 +296,88 @@ function drawSmallHeart(
 
 function drawFloatingHearts(){
 
-  floatingHearts.forEach(
-    h=>{
+  floatingHearts.forEach(h=>{
 
-      h.y -= h.speed;
+    h.y-=h.speed;
 
-      h.phase += .02;
+    h.phase+=.02;
 
+    if(h.y<-30){
 
-      if(h.y < -30){
+      h.y=H+30;
 
-        h.y =
-          H+30;
-
-        h.x =
-          Math.random()*W;
-
-      }
-
-
-      drawSmallHeart(
-        h.x +
-        Math.sin(h.phase)*3,
-
-        h.y,
-
-        h.size
-      );
+      h.x=Math.random()*W;
 
     }
-  );
+
+    smallHeart(
+
+      h.x+Math.sin(h.phase)*3,
+
+      h.y,
+
+      h.size
+
+    );
+
+  });
 
 }
 
 
-/* =========================
-   رسم یک رشته از قلب
-========================= */
+/* =================================
+   ساخت نقاط قلب
+================================= */
 
-function drawStrand({
+function makePoints(scale){
 
-  color,
-  offset,
-  progress,
-  scale
+  const points=[];
 
-}){
+  const count=900;
 
-  const total=700;
+  for(let i=0;i<=count;i++){
 
-  const points =
-    Math.floor(
-      total * progress
+    const t=
+      -Math.PI+
+      (i/count)*Math.PI*2;
+
+    points.push(
+      getPoint(t,scale)
     );
 
+  }
 
-  if(points < 2)
+  return points;
+
+}
+
+
+/* =================================
+   رسم یک قسمت از رشته
+================================= */
+
+function strokeSegment(
+  points,
+  start,
+  end,
+  color,
+  width
+){
+
+  if(end<=start)
     return;
-
 
   ctx.beginPath();
 
-
   for(
-    let i=0;
-    i<=points;
+    let i=start;
+    i<=end;
     i++
   ){
 
-    const t =
+    const p=points[i];
 
-      -Math.PI +
-
-      (i/total) *
-      Math.PI*2;
-
-
-    const p =
-      getPoint(
-        t + offset,
-        scale
-      );
-
-
-    if(i===0){
+    if(i===start){
 
       ctx.moveTo(
         p.x,
@@ -490,192 +395,316 @@ function drawStrand({
 
   }
 
+  ctx.strokeStyle=color;
 
-  ctx.lineWidth =
-    Math.max(
-      6,
-      scale*.75
-    );
+  ctx.lineWidth=width;
 
+  ctx.lineCap="round";
 
-  ctx.lineCap =
-    "round";
-
-  ctx.lineJoin =
-    "round";
-
-
-  /* درخشش */
-
-  ctx.shadowBlur =
-    18;
-
-  ctx.shadowColor =
-    color;
-
-
-  ctx.strokeStyle =
-    color;
-
+  ctx.lineJoin="round";
 
   ctx.stroke();
-
-
-  ctx.shadowBlur=0;
-
-
-  /* نوک نورانی که قلب را می‌کشد */
-
-  const endT =
-
-    -Math.PI +
-
-    (points/total) *
-    Math.PI*2;
-
-
-  const end =
-    getPoint(
-      endT+offset,
-      scale
-    );
-
-
-  ctx.beginPath();
-
-  ctx.arc(
-    end.x,
-    end.y,
-    4,
-    0,
-    Math.PI*2
-  );
-
-
-  ctx.fillStyle =
-    "#ffffff";
-
-  ctx.shadowBlur =
-    25;
-
-  ctx.shadowColor =
-    color;
-
-  ctx.fill();
-
-  ctx.shadowBlur=0;
 
 }
 
 
-/* =========================
-   زمان شروع
-========================= */
+/* =================================
+   قلب درهم تنیده
+================================= */
 
-const startTime =
-  performance.now();
+function drawInterwovenHeart(
+  progress,
+  scale
+){
+
+  const points=
+    makePoints(scale);
+
+  const total=
+    points.length-1;
+
+  const visible=
+    Math.floor(
+      total*progress
+    );
+
+  if(visible<2)
+    return;
 
 
-/*
-   مدت تشکیل قلب:
+  const red="#e60032";
+  const blue="#064fe8";
 
-   12 ثانیه
-*/
+  const width=
+    Math.max(
+      7,
+      scale*.8
+    );
 
-const DRAW_TIME =
-  12000;
+
+  /*
+    اول رشته آبی
+  */
+
+  ctx.save();
+
+  ctx.shadowBlur=15;
+
+  ctx.shadowColor=blue;
+
+  strokeSegment(
+    points,
+    0,
+    visible,
+    blue,
+    width
+  );
+
+  ctx.restore();
 
 
-/* =========================
-   انیمیشن اصلی
-========================= */
+  /*
+    حالا قسمت‌های قرمز
+    روی آبی قرار می‌گیرند
+  */
+
+  const weaveLength=38;
+
+  for(
+    let start=0;
+    start<visible;
+    start+=weaveLength*2
+  ){
+
+    const end=
+      Math.min(
+        start+weaveLength,
+        visible
+      );
+
+    ctx.save();
+
+    ctx.shadowBlur=16;
+
+    ctx.shadowColor=red;
+
+    strokeSegment(
+      points,
+      start,
+      end,
+      red,
+      width
+    );
+
+    ctx.restore();
+
+  }
+
+
+  /*
+    قسمت‌های آبی دوباره
+    روی قرمز قرار می‌گیرند
+  */
+
+  for(
+    let start=weaveLength;
+    start<visible;
+    start+=weaveLength*2
+  ){
+
+    const end=
+      Math.min(
+        start+weaveLength,
+        visible
+      );
+
+    ctx.save();
+
+    ctx.shadowBlur=16;
+
+    ctx.shadowColor=blue;
+
+    strokeSegment(
+      points,
+      start,
+      end,
+      blue,
+      width
+    );
+
+    ctx.restore();
+
+  }
+
+
+  /*
+    یک رشته دوم قرمز
+    کمی جابه‌جا برای حالت
+    درهم‌تنیده واقعی‌تر
+  */
+
+  const second=[];
+
+  for(
+    let i=0;
+    i<=900;
+    i++
+  ){
+
+    const t=
+      -Math.PI+
+      (i/900)*Math.PI*2;
+
+    /*
+      کمی موج در مسیر
+    */
+
+    const p=
+      getPoint(
+        t+.045,
+        scale
+      );
+
+    second.push(p);
+
+  }
+
+
+  const secondVisible=
+    Math.floor(
+      total*progress
+    );
+
+
+  /*
+    فقط بخش‌هایی از رشته دوم
+    نمایش داده می‌شود
+  */
+
+  for(
+    let start=0;
+    start<secondVisible;
+    start+=weaveLength*2
+  ){
+
+    const end=
+      Math.min(
+        start+weaveLength,
+        secondVisible
+      );
+
+    ctx.save();
+
+    ctx.shadowBlur=14;
+
+    ctx.shadowColor=red;
+
+    strokeSegment(
+      second,
+      start,
+      end,
+      red,
+      width*.72
+    );
+
+    ctx.restore();
+
+  }
+
+
+  /*
+    نقطه نورانی که
+    مسیر را دنبال می‌کند
+  */
+
+  const current=
+    points[visible];
+
+  if(current){
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    ctx.arc(
+      current.x,
+      current.y,
+      5,
+      0,
+      Math.PI*2
+    );
+
+    ctx.fillStyle="white";
+
+    ctx.shadowBlur=28;
+
+    ctx.shadowColor="#ff4d91";
+
+    ctx.fill();
+
+    ctx.restore();
+
+  }
+
+}
+
+
+/* =================================
+   زمان ساخت
+================================= */
+
+const start=
+performance.now();
+
+const DRAW_TIME=
+12000;
+
+
+/* =================================
+   انیمیشن
+================================= */
 
 function animate(now){
 
-  drawBackground();
+  background();
 
   drawFloatingHearts();
 
 
-  /* زمان سپری شده */
+  let progress=
+    (now-start)/
+    DRAW_TIME;
 
-  const elapsed =
-    now - startTime;
 
-
-  /*
-    progress از صفر
-    تا یک
-  */
-
-  let progress =
+  progress=
     Math.min(
-      elapsed / DRAW_TIME,
+      progress,
       1
     );
 
 
   /*
-    حرکت نرم‌تر
+    شروع آهسته و پایان نرم
   */
 
-  progress =
-    progress *
-    progress *
-    (3 - 2*progress);
+  const smooth=
+    progress*
+    progress*
+    (3-2*progress);
 
 
   /*
-    اندازه قلب
+    اندازه مناسب موبایل
   */
 
-  const scale =
-    Math.min(
-      W,
-      H
-    ) / 42;
+  const scale=
+    Math.min(W,H)/42;
 
 
-  /* =====================
-     رشته قرمز
-  ===================== */
-
-  drawStrand({
-
-    color:"#e90035",
-
-    offset:0,
-
-    progress:
-
-      progress,
-
-    scale:scale
-
-  });
-
-
-  /* =====================
-     رشته آبی
-  ===================== */
-
-  drawStrand({
-
-    color:"#0757e8",
-
-    offset:
-      Math.PI/70,
-
-    progress:
-
-      Math.max(
-        0,
-        progress-.025
-      ),
-
-    scale:scale
-
-  });
+  drawInterwovenHeart(
+    smooth,
+    scale
+  );
 
 
   /*
@@ -685,75 +714,54 @@ function animate(now){
 
   if(progress>=1){
 
-    const glow =
-      .45 +
-      Math.sin(
-        now/500
-      )*.18;
+    const glow=
+      .45+
+      Math.sin(now/450)*.18;
 
 
     ctx.save();
 
-    ctx.globalAlpha =
+    ctx.globalAlpha=
       glow;
+
+
+    const points=
+      makePoints(scale);
 
 
     ctx.beginPath();
 
+    points.forEach(
+      (p,i)=>{
 
-    for(
-      let i=0;
-      i<=700;
-      i++
-    ){
+        if(i===0){
 
-      const t =
+          ctx.moveTo(
+            p.x,
+            p.y
+          );
 
-        -Math.PI +
+        }else{
 
-        (i/700) *
-        Math.PI*2;
+          ctx.lineTo(
+            p.x,
+            p.y
+          );
 
-
-      const p =
-        getPoint(
-          t,
-          scale
-        );
-
-
-      if(i===0){
-
-        ctx.moveTo(
-          p.x,
-          p.y
-        );
-
-      }else{
-
-        ctx.lineTo(
-          p.x,
-          p.y
-        );
+        }
 
       }
-
-    }
-
-
-    ctx.closePath();
+    );
 
 
-    ctx.strokeStyle =
-      "rgba(255,70,160,.3)";
+    ctx.strokeStyle=
+      "rgba(255,60,150,.25)";
 
     ctx.lineWidth=5;
 
     ctx.shadowBlur=35;
 
-    ctx.shadowColor=
-      "#ff287d";
-
+    ctx.shadowColor="#ff287d";
 
     ctx.stroke();
 
@@ -767,7 +775,6 @@ function animate(now){
   );
 
 }
-
 
 requestAnimationFrame(
   animate
