@@ -2,22 +2,29 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>برای تو 🌸❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>همچنان برای چشات ❤️</title>
 
 <style>
-*{box-sizing:border-box}
 
+*{
+  box-sizing:border-box;
+}
+
+html,
 body{
   margin:0;
-  min-height:100vh;
+  width:100%;
+  height:100%;
   overflow:hidden;
-  background:radial-gradient(circle at 50% 35%,
-  #32182f 0%,#130d1c 45%,#05050b 100%);
+  background:#070711;
+}
+
+body{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-family:Tahoma,sans-serif;
 }
 
 canvas{
@@ -27,325 +34,744 @@ canvas{
   height:100%;
 }
 
-.note{
+.text{
   position:fixed;
   top:7%;
+  left:0;
   width:100%;
   text-align:center;
-  color:#ffe7f2;
-  font-size:clamp(18px,3vw,30px);
-  text-shadow:0 0 18px #ff6fae;
-  pointer-events:none;
-  animation:pulse 2.5s ease-in-out infinite;
+
+  color:white;
+
+  font-family:
+    Tahoma,
+    Arial,
+    sans-serif;
+
+  font-size:
+    clamp(22px,5vw,40px);
+
+  text-shadow:
+    0 0 8px #ff4d88,
+    0 0 18px #ff174f,
+    0 0 35px #ff174f;
+
+  animation:pulse 2.5s infinite;
+
+  z-index:10;
 }
 
 @keyframes pulse{
-  50%{
-    transform:scale(1.04);
-    opacity:.85;
+
+  0%,100%{
+    transform:scale(1);
   }
+
+  50%{
+    transform:scale(1.06);
+  }
+
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="note"> برای چشات    ❤️</div>
+<div class="text">
+  همچنان برای چشات ❤️
+</div>
 
-<canvas id="flower"></canvas>
+<canvas id="canvas"></canvas>
 
 <script>
-const canvas=document.getElementById("flower");
-const ctx=canvas.getContext("2d");
 
-let W,H,t=0;
+const canvas =
+  document.getElementById("canvas");
+
+const ctx =
+  canvas.getContext("2d");
+
+let W;
+let H;
 
 function resize(){
-  W=canvas.width=innerWidth;
-  H=canvas.height=innerHeight;
+
+  W = canvas.width =
+    window.innerWidth;
+
+  H = canvas.height =
+    window.innerHeight;
+
 }
 
-addEventListener("resize",resize);
+window.addEventListener(
+  "resize",
+  resize
+);
+
 resize();
 
 
-/* قلب‌های شناور */
-function heart(x,y,s,a){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(a);
+/* =========================
+   مسیر ریاضی قلب
+========================= */
 
-  ctx.beginPath();
-  ctx.moveTo(0,s*.35);
-  ctx.bezierCurveTo(
-    -s*.9,-s*.15,
-    -s*.55,-s*.8,
-    0,-s*.38
-  );
-  ctx.bezierCurveTo(
-    s*.55,-s*.8,
-    s*.9,-s*.15,
-    0,s*.35
-  );
+function heart(t){
 
-  ctx.fillStyle="rgba(255,120,177,.18)";
-  ctx.fill();
+  const x =
+    16 * Math.pow(
+      Math.sin(t),
+      3
+    );
 
-  ctx.restore();
+  const y =
+    13 * Math.cos(t)
+    - 5 * Math.cos(2*t)
+    - 2 * Math.cos(3*t)
+    - Math.cos(4*t);
+
+  return {
+    x:x,
+    y:-y
+  };
+
 }
 
 
-let hearts=Array.from({length:35},()=>({
-  x:Math.random()*W,
-  y:Math.random()*H,
-  s:4+Math.random()*10,
-  speed:.15+Math.random()*.5,
-  a:Math.random()*6
-}));
+/* =========================
+   تبدیل مسیر به صفحه
+========================= */
+
+function getPoint(
+  t,
+  scale
+){
+
+  const p =
+    heart(t);
+
+  return {
+
+    x:
+      W / 2 +
+      p.x * scale,
+
+    y:
+      H / 2 +
+      p.y * scale
+
+  };
+
+}
 
 
-/* ساقه و برگ‌ها */
-function stem(){
+/* =========================
+   ستاره‌های پس‌زمینه
+========================= */
 
-  let baseX=W/2;
-  let baseY=H*.92;
+const stars=[];
 
-  ctx.save();
-  ctx.lineCap="round";
+for(
+  let i=0;
+  i<120;
+  i++
+){
 
-  ctx.beginPath();
-  ctx.moveTo(baseX,baseY);
+  stars.push({
 
-  ctx.bezierCurveTo(
-    W*.49,H*.72,
-    W*.54,H*.53,
-    W*.5,H*.28
+    x:
+      Math.random() *
+      window.innerWidth,
+
+    y:
+      Math.random() *
+      window.innerHeight,
+
+    size:
+      Math.random()*2+0.3,
+
+    phase:
+      Math.random() *
+      Math.PI*2
+
+  });
+
+}
+
+
+/* =========================
+   قلب‌های کوچک شناور
+========================= */
+
+const floatingHearts=[];
+
+for(
+  let i=0;
+  i<25;
+  i++
+){
+
+  floatingHearts.push({
+
+    x:
+      Math.random()*window.innerWidth,
+
+    y:
+      Math.random()*window.innerHeight,
+
+    size:
+      4+
+      Math.random()*10,
+
+    speed:
+      .15+
+      Math.random()*.45,
+
+    phase:
+      Math.random()*6
+
+  });
+
+}
+
+
+/* =========================
+   پس‌زمینه
+========================= */
+
+function drawBackground(){
+
+  const gradient =
+    ctx.createRadialGradient(
+
+      W/2,
+      H*.45,
+      10,
+
+      W/2,
+      H*.45,
+      Math.max(W,H)*.75
+
+    );
+
+
+  gradient.addColorStop(
+    0,
+    "#35152f"
   );
 
-  ctx.strokeStyle="#4d6b3d";
-  ctx.lineWidth=7;
+  gradient.addColorStop(
+    .4,
+    "#171025"
+  );
+
+  gradient.addColorStop(
+    1,
+    "#05050b"
+  );
+
+
+  ctx.fillStyle =
+    gradient;
+
+  ctx.fillRect(
+    0,
+    0,
+    W,
+    H
+  );
+
+
+  /* ستاره‌ها */
+
+  stars.forEach(
+    star=>{
+
+      star.phase += .015;
+
+      const alpha =
+        .25 +
+        Math.sin(
+          star.phase
+        )*.2;
+
+
+      ctx.beginPath();
+
+      ctx.arc(
+        star.x,
+        star.y,
+        star.size,
+        0,
+        Math.PI*2
+      );
+
+      ctx.fillStyle =
+        `rgba(255,130,190,${alpha})`;
+
+      ctx.fill();
+
+    }
+  );
+
+}
+
+
+/* =========================
+   رسم قلب‌های کوچک
+========================= */
+
+function drawSmallHeart(
+  x,
+  y,
+  size
+){
+
+  ctx.save();
+
+  ctx.translate(
+    x,
+    y
+  );
+
+
+  ctx.beginPath();
+
+  ctx.moveTo(
+    0,
+    size*.4
+  );
+
+
+  ctx.bezierCurveTo(
+
+    -size,
+    -size*.25,
+
+    -size*.7,
+    -size,
+
+    0,
+    -size*.4
+
+  );
+
+
+  ctx.bezierCurveTo(
+
+    size*.7,
+    -size,
+
+    size,
+    -size*.25,
+
+    0,
+    size*.4
+
+  );
+
+
+  ctx.fillStyle =
+    "rgba(255,70,140,.22)";
+
+  ctx.shadowBlur=10;
+
+  ctx.shadowColor=
+    "#ff267d";
+
+  ctx.fill();
+
+  ctx.restore();
+
+}
+
+
+function drawFloatingHearts(){
+
+  floatingHearts.forEach(
+    h=>{
+
+      h.y -= h.speed;
+
+      h.phase += .02;
+
+
+      if(h.y < -30){
+
+        h.y =
+          H+30;
+
+        h.x =
+          Math.random()*W;
+
+      }
+
+
+      drawSmallHeart(
+        h.x +
+        Math.sin(h.phase)*3,
+
+        h.y,
+
+        h.size
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================
+   رسم یک رشته از قلب
+========================= */
+
+function drawStrand({
+
+  color,
+  offset,
+  progress,
+  scale
+
+}){
+
+  const total=700;
+
+  const points =
+    Math.floor(
+      total * progress
+    );
+
+
+  if(points < 2)
+    return;
+
+
+  ctx.beginPath();
+
+
+  for(
+    let i=0;
+    i<=points;
+    i++
+  ){
+
+    const t =
+
+      -Math.PI +
+
+      (i/total) *
+      Math.PI*2;
+
+
+    const p =
+      getPoint(
+        t + offset,
+        scale
+      );
+
+
+    if(i===0){
+
+      ctx.moveTo(
+        p.x,
+        p.y
+      );
+
+    }else{
+
+      ctx.lineTo(
+        p.x,
+        p.y
+      );
+
+    }
+
+  }
+
+
+  ctx.lineWidth =
+    Math.max(
+      6,
+      scale*.75
+    );
+
+
+  ctx.lineCap =
+    "round";
+
+  ctx.lineJoin =
+    "round";
+
+
+  /* درخشش */
+
+  ctx.shadowBlur =
+    18;
+
+  ctx.shadowColor =
+    color;
+
+
+  ctx.strokeStyle =
+    color;
+
+
   ctx.stroke();
 
 
-  const leaves=[
-    [H*.63,-.45],
-    [H*.55,.55],
-    [H*.43,-.45]
-  ];
+  ctx.shadowBlur=0;
 
-  leaves.forEach(([y,rot])=>{
+
+  /* نوک نورانی که قلب را می‌کشد */
+
+  const endT =
+
+    -Math.PI +
+
+    (points/total) *
+    Math.PI*2;
+
+
+  const end =
+    getPoint(
+      endT+offset,
+      scale
+    );
+
+
+  ctx.beginPath();
+
+  ctx.arc(
+    end.x,
+    end.y,
+    4,
+    0,
+    Math.PI*2
+  );
+
+
+  ctx.fillStyle =
+    "#ffffff";
+
+  ctx.shadowBlur =
+    25;
+
+  ctx.shadowColor =
+    color;
+
+  ctx.fill();
+
+  ctx.shadowBlur=0;
+
+}
+
+
+/* =========================
+   زمان شروع
+========================= */
+
+const startTime =
+  performance.now();
+
+
+/*
+   مدت تشکیل قلب:
+
+   12 ثانیه
+*/
+
+const DRAW_TIME =
+  12000;
+
+
+/* =========================
+   انیمیشن اصلی
+========================= */
+
+function animate(now){
+
+  drawBackground();
+
+  drawFloatingHearts();
+
+
+  /* زمان سپری شده */
+
+  const elapsed =
+    now - startTime;
+
+
+  /*
+    progress از صفر
+    تا یک
+  */
+
+  let progress =
+    Math.min(
+      elapsed / DRAW_TIME,
+      1
+    );
+
+
+  /*
+    حرکت نرم‌تر
+  */
+
+  progress =
+    progress *
+    progress *
+    (3 - 2*progress);
+
+
+  /*
+    اندازه قلب
+  */
+
+  const scale =
+    Math.min(
+      W,
+      H
+    ) / 42;
+
+
+  /* =====================
+     رشته قرمز
+  ===================== */
+
+  drawStrand({
+
+    color:"#e90035",
+
+    offset:0,
+
+    progress:
+
+      progress,
+
+    scale:scale
+
+  });
+
+
+  /* =====================
+     رشته آبی
+  ===================== */
+
+  drawStrand({
+
+    color:"#0757e8",
+
+    offset:
+      Math.PI/70,
+
+    progress:
+
+      Math.max(
+        0,
+        progress-.025
+      ),
+
+    scale:scale
+
+  });
+
+
+  /*
+    وقتی کامل شد،
+    درخشش نهایی
+  */
+
+  if(progress>=1){
+
+    const glow =
+      .45 +
+      Math.sin(
+        now/500
+      )*.18;
+
 
     ctx.save();
 
-    ctx.translate(W*.5,y);
-    ctx.rotate(rot);
+    ctx.globalAlpha =
+      glow;
 
-    ctx.beginPath();
-    ctx.ellipse(
-      35,0,
-      55,18,
-      0,0,Math.PI*2
-    );
-
-    ctx.fillStyle="#688d4e";
-    ctx.fill();
-
-    ctx.restore();
-  });
-
-  ctx.restore();
-}
-
-
-/* گلبرگ */
-function petal(cx,cy,rx,ry,angle,alpha){
-
-  ctx.save();
-
-  ctx.translate(cx,cy);
-  ctx.rotate(angle);
-
-  const gradient=ctx.createRadialGradient(
-    0,-ry*.2,
-    2,
-    0,0,
-    ry
-  );
-
-  gradient.addColorStop(
-    0,
-    `rgba(255,245,249,${alpha})`
-  );
-
-  gradient.addColorStop(
-    .45,
-    `rgba(255,151,194,${alpha})`
-  );
-
-  gradient.addColorStop(
-    1,
-    `rgba(199,50,111,${alpha})`
-  );
-
-  ctx.fillStyle=gradient;
-
-  ctx.beginPath();
-  ctx.ellipse(
-    0,0,
-    rx,ry,
-    0,0,Math.PI*2
-  );
-
-  ctx.fill();
-
-  ctx.restore();
-}
-
-
-/* ساخت گل */
-function blossom(cx,cy,size){
-
-  const petals=10;
-
-  for(let i=0;i<petals;i++){
-
-    const angle=i*Math.PI*2/petals;
-
-    petal(
-      cx+Math.cos(angle)*size*.22,
-      cy+Math.sin(angle)*size*.22,
-      size*.32,
-      size*.62,
-      angle+Math.PI/2,
-      .92
-    );
-  }
-
-
-  for(let i=0;i<6;i++){
-
-    const angle=i*Math.PI*2/6+.2;
-
-    petal(
-      cx+Math.cos(angle)*size*.12,
-      cy+Math.sin(angle)*size*.12,
-      size*.25,
-      size*.45,
-      angle+Math.PI/2,
-      .98
-    );
-  }
-
-
-  /* مرکز گل */
-
-  const center=ctx.createRadialGradient(
-    cx,cy,1,
-    cx,cy,size*.18
-  );
-
-  center.addColorStop(0,"#ffd66d");
-  center.addColorStop(1,"#d76b39");
-
-  ctx.fillStyle=center;
-
-  ctx.beginPath();
-  ctx.arc(cx,cy,size*.15,0,Math.PI*2);
-  ctx.fill();
-
-
-  /* پرچم‌های گل */
-
-  for(let i=0;i<18;i++){
-
-    const angle=i*Math.PI*2/18;
-    const r=size*.18;
-
-    ctx.fillStyle="#ffe89a";
 
     ctx.beginPath();
 
-    ctx.arc(
-      cx+Math.cos(angle)*r,
-      cy+Math.sin(angle)*r,
-      2.2,
-      0,
-      Math.PI*2
-    );
 
-    ctx.fill();
-  }
-}
+    for(
+      let i=0;
+      i<=700;
+      i++
+    ){
 
+      const t =
 
-/* انیمیشن */
+        -Math.PI +
 
-function animate(){
-
-  t+=.016;
-
-  ctx.clearRect(0,0,W,H);
+        (i/700) *
+        Math.PI*2;
 
 
-  /* نور پشت گل */
-
-  const glow=ctx.createRadialGradient(
-    W/2,H*.38,10,
-    W/2,H*.38,H*.65
-  );
-
-  glow.addColorStop(
-    0,
-    "rgba(255,95,157,.11)"
-  );
-
-  glow.addColorStop(
-    1,
-    "rgba(0,0,0,0)"
-  );
-
-  ctx.fillStyle=glow;
-  ctx.fillRect(0,0,W,H);
+      const p =
+        getPoint(
+          t,
+          scale
+        );
 
 
-  /* قلب‌های متحرک */
+      if(i===0){
 
-  hearts.forEach(h=>{
+        ctx.moveTo(
+          p.x,
+          p.y
+        );
 
-    h.y-=h.speed;
-    h.a+=.008;
+      }else{
 
-    if(h.y<-30){
-      h.y=H+30;
-      h.x=Math.random()*W;
+        ctx.lineTo(
+          p.x,
+          p.y
+        );
+
+      }
+
     }
 
-    heart(
-      h.x,
-      h.y,
-      h.s,
-      Math.sin(h.a)*.2
-    );
-  });
+
+    ctx.closePath();
 
 
-  stem();
+    ctx.strokeStyle =
+      "rgba(255,70,160,.3)";
+
+    ctx.lineWidth=5;
+
+    ctx.shadowBlur=35;
+
+    ctx.shadowColor=
+      "#ff287d";
 
 
-  /* گل‌ها */
+    ctx.stroke();
 
-  const sway=Math.sin(t)*3;
+    ctx.restore();
 
-  blossom(W*.5+sway,H*.29,58);
-  blossom(W*.39+sway,H*.43,42);
-  blossom(W*.62+sway,H*.45,47);
-  blossom(W*.48+sway,H*.57,37);
+  }
 
 
-  requestAnimationFrame(animate);
+  requestAnimationFrame(
+    animate
+  );
+
 }
 
-animate();
+
+requestAnimationFrame(
+  animate
+);
 
 </script>
 
