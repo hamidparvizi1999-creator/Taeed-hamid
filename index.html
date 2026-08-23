@@ -1,759 +1,353 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>...</title>
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            width: 100%;
-            min-height: 100%;
-        }
-
-        body {
-            min-height: 100vh;
-
-            font-family:
-                Tahoma,
-                Arial,
-                sans-serif;
-
-            color: #f5eeee;
-
-            overflow: hidden;
-
-            background:
-                linear-gradient(
-                    rgba(8, 6, 7, 0.25),
-                    rgba(8, 6, 7, 0.35)
-                ),
-                url("./background.jpg?v=3");
-
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }
-
-
-        /* لایه‌ی تاریک روی عکس */
-
-        body::before {
-            content: "";
-
-            position: fixed;
-
-            inset: 0;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(110, 35, 55, 0.10),
-                    transparent 55%
-                );
-
-            pointer-events: none;
-
-            z-index: 0;
-        }
-
-
-        /* صفحه اصلی */
-
-        .page {
-            min-height: 100vh;
-
-            display: flex;
-
-            justify-content: center;
-            align-items: center;
-
-            padding: 20px;
-
-            position: relative;
-
-            z-index: 2;
-        }
-
-
-        /* کارت سؤال */
-
-        .question-box {
-
-            width: min(500px, 92vw);
-
-            padding: 42px 28px 32px;
-
-            text-align: center;
-
-            background:
-                rgba(15, 11, 13, 0.72);
-
-            border:
-
-                1px solid
-                rgba(255, 190, 205, 0.16);
-
-            border-radius: 24px;
-
-            backdrop-filter: blur(13px);
-
-            -webkit-backdrop-filter: blur(13px);
-
-            box-shadow:
-                0 25px 80px rgba(0, 0, 0, 0.55),
-                inset 0 1px 0 rgba(255,255,255,0.05);
-
-            animation:
-                boxAppear 1.2s ease;
-        }
-
-
-        @keyframes boxAppear {
-
-            from {
-                opacity: 0;
-
-                transform:
-                    translateY(20px)
-                    scale(0.97);
-            }
-
-            to {
-                opacity: 1;
-
-                transform:
-                    translateY(0)
-                    scale(1);
-            }
-
-        }
-
-
-        /* سؤال */
-
-        #question {
-
-            margin: 0 0 35px;
-
-            font-size: clamp(22px, 5vw, 30px);
-
-            font-weight: 400;
-
-            line-height: 1.8;
-
-            color: #f5e7e9;
-
-            text-shadow:
-                0 3px 20px rgba(0,0,0,0.7);
-        }
-
-
-        /* دکمه‌ها */
-
-        .buttons {
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            gap: 18px;
-
-            min-height: 58px;
-
-            position: relative;
-        }
-
-
-        button {
-
-            width: 135px;
-
-            height: 52px;
-
-            border: none;
-
-            border-radius: 14px;
-
-            font-family: inherit;
-
-            font-size: 17px;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.25s ease,
-                box-shadow 0.25s ease,
-                background 0.25s ease;
-        }
-
-
-        /* موافقم */
-
-        #yes {
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #9f3859,
-                    #c65476
-                );
-
-            color: white;
-
-            box-shadow:
-                0 8px 25px
-                rgba(170, 45, 85, 0.25);
-        }
-
-
-        #yes:hover {
-
-            transform:
-                translateY(-3px)
-                scale(1.03);
-
-            box-shadow:
-                0 12px 32px
-                rgba(200, 55, 95, 0.35);
-        }
-
-
-        /* نه */
-
-        #no {
-
-            background:
-                rgba(255,255,255,0.08);
-
-            color:
-                rgba(255,255,255,0.85);
-
-            border:
-                1px solid
-                rgba(255,255,255,0.10);
-
-            position: relative;
-
-            transition:
-                left 0.15s ease,
-                top 0.15s ease;
-        }
-
-
-        /* متن کوچک بین سوالات */
-
-        .small-text {
-
-            margin-top: 30px;
-
-            font-size: 12px;
-
-            line-height: 2;
-
-            color:
-                rgba(255, 230, 235, 0.48);
-
-            font-weight: 300;
-
-            transition:
-                opacity 0.8s ease;
-
-        }
-
-
-        /* جمله‌ی دوم */
-
-        #secondMessage {
-
-            display: none;
-
-            margin-top: 26px;
-
-            font-size: 12px;
-
-            line-height: 2.2;
-
-            color:
-                rgba(255, 220, 228, 0.55);
-
-            padding: 0 15px;
-
-            animation:
-                fadeIn 1.2s ease;
-        }
-
-
-        @keyframes fadeIn {
-
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-
-        }
-
-
-        /* متن پایینی */
-
-        .secret-text {
-
-            position: fixed;
-
-            bottom: 10px;
-
-            left: 0;
-
-            right: 0;
-
-            text-align: center;
-
-            font-size: 8px;
-
-            color:
-                rgba(255,255,255,0.16);
-
-            letter-spacing: 0.5px;
-
-            user-select: none;
-
-            pointer-events: none;
-
-            z-index: 5;
-        }
-
-
-        /* پایان */
-
-        #finalScreen {
-
-            display: none;
-
-            min-height: 100vh;
-
-            width: 100%;
-
-            justify-content: center;
-
-            align-items: center;
-
-            text-align: center;
-
-            padding: 25px;
-
-            animation:
-                fadeIn 1.5s ease;
-        }
-
-
-        .final-box {
-
-            width: min(500px, 90vw);
-
-            padding: 45px 25px;
-
-            border-radius: 25px;
-
-            background:
-                rgba(12, 9, 10, 0.75);
-
-            border:
-                1px solid
-                rgba(255, 180, 195, 0.12);
-
-            backdrop-filter:
-                blur(14px);
-
-            box-shadow:
-                0 25px 80px
-                rgba(0,0,0,0.6);
-        }
-
-
-        .final-text {
-
-            font-size: 25px;
-
-            line-height: 2;
-
-            color: #f3dfe3;
-        }
-
-
-        .final-sub {
-
-            margin-top: 20px;
-
-            font-size: 12px;
-
-            color:
-                rgba(255,255,255,0.4);
-
-        }
-
-
-        /* موبایل */
-
-        @media (max-width: 600px) {
-
-            .question-box {
-
-                padding:
-                    35px 18px 28px;
-
-            }
-
-            #question {
-
-                font-size: 22px;
-
-                margin-bottom: 30px;
-            }
-
-            button {
-
-                width: 125px;
-
-                height: 50px;
-
-                font-size: 16px;
-            }
-
-            .small-text {
-
-                font-size: 11px;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>برای تو 🌸❤️</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  overflow:hidden;
+  background:radial-gradient(circle at 50% 35%,
+  #32182f 0%,#130d1c 45%,#05050b 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Tahoma,sans-serif;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+.note{
+  position:fixed;
+  top:7%;
+  width:100%;
+  text-align:center;
+  color:#ffe7f2;
+  font-size:clamp(18px,3vw,30px);
+  text-shadow:0 0 18px #ff6fae;
+  pointer-events:none;
+  animation:pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  50%{
+    transform:scale(1.04);
+    opacity:.85;
+  }
+}
+</style>
 </head>
-
 
 <body>
 
+<div class="note">برای قشنگ‌ترین آدم زندگی من ❤️</div>
 
-    <!-- صفحه سوالات -->
+<canvas id="flower"></canvas>
 
-    <main class="page" id="mainPage">
+<script>
+const canvas=document.getElementById("flower");
+const ctx=canvas.getContext("2d");
 
-        <section class="question-box">
+let W,H,t=0;
 
-            <h1 id="question">
-                 با حمید موافقی؟
-            </h1>
+function resize(){
+  W=canvas.width=innerWidth;
+  H=canvas.height=innerHeight;
+}
 
+addEventListener("resize",resize);
+resize();
 
-            <div class="buttons">
 
-                <button id="no">
-                    نه
-                </button>
+/* قلب‌های شناور */
+function heart(x,y,s,a){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(a);
 
-                <button id="yes">
-                    موافقم
-                </button>
+  ctx.beginPath();
+  ctx.moveTo(0,s*.35);
+  ctx.bezierCurveTo(
+    -s*.9,-s*.15,
+    -s*.55,-s*.8,
+    0,-s*.38
+  );
+  ctx.bezierCurveTo(
+    s*.55,-s*.8,
+    s*.9,-s*.15,
+    0,s*.35
+  );
 
-            </div>
+  ctx.fillStyle="rgba(255,120,177,.18)";
+  ctx.fill();
 
+  ctx.restore();
+}
 
-            <!-- جمله‌ای که بعداً نمایش داده می‌شود -->
 
-            <div
-                id="secondMessage"
-            >
-                جواب همه‌ی سوالا نمیدونم نیست...
-                <br>
-                گاهی فقط باید شروع کنی حرف بزنی
-                از هر چی که دوست داری.
-            </div>
+let hearts=Array.from({length:35},()=>({
+  x:Math.random()*W,
+  y:Math.random()*H,
+  s:4+Math.random()*10,
+  speed:.15+Math.random()*.5,
+  a:Math.random()*6
+}));
 
 
-            <!-- جمله‌ی ظریف اول -->
+/* ساقه و برگ‌ها */
+function stem(){
 
-            <div
-                class="small-text"
-                id="firstMessage"
-            >
-                بعضی چیزا رو باید حس کردددددد...
-            </div>
+  let baseX=W/2;
+  let baseY=H*.92;
 
-        </section>
+  ctx.save();
+  ctx.lineCap="round";
 
-    </main>
+  ctx.beginPath();
+  ctx.moveTo(baseX,baseY);
 
+  ctx.bezierCurveTo(
+    W*.49,H*.72,
+    W*.54,H*.53,
+    W*.5,H*.28
+  );
 
+  ctx.strokeStyle="#4d6b3d";
+  ctx.lineWidth=7;
+  ctx.stroke();
 
-    <!-- صفحه پایانی -->
 
-    <section
-        id="finalScreen"
-    >
+  const leaves=[
+    [H*.63,-.45],
+    [H*.55,.55],
+    [H*.43,-.45]
+  ];
 
-        <div class="final-box">
+  leaves.forEach(([y,rot])=>{
 
-            <div class="final-text">
+    ctx.save();
 
-                پس با حمید
-                <br>
-                راز رو تخریب کن
+    ctx.translate(W*.5,y);
+    ctx.rotate(rot);
 
-            </div>
+    ctx.beginPath();
+    ctx.ellipse(
+      35,0,
+      55,18,
+      0,0,Math.PI*2
+    );
 
-            <div class="final-sub">
+    ctx.fillStyle="#688d4e";
+    ctx.fill();
 
-                بعضی حرف‌ها فقط وقتی گفته میشن،
-                معنی پیدا می‌کنن...
+    ctx.restore();
+  });
 
-            </div>
+  ctx.restore();
+}
 
-        </div>
 
-    </section>
+/* گلبرگ */
+function petal(cx,cy,rx,ry,angle,alpha){
 
+  ctx.save();
 
+  ctx.translate(cx,cy);
+  ctx.rotate(angle);
 
-    <!-- نوشته خیلی کوچک پایین -->
+  const gradient=ctx.createRadialGradient(
+    0,-ry*.2,
+    2,
+    0,0,
+    ry
+  );
 
-    <div class="secret-text">
+  gradient.addColorStop(
+    0,
+    `rgba(255,245,249,${alpha})`
+  );
 
-        حمید دو تا گوش فیلی داره
+  gradient.addColorStop(
+    .45,
+    `rgba(255,151,194,${alpha})`
+  );
 
-    </div>
+  gradient.addColorStop(
+    1,
+    `rgba(199,50,111,${alpha})`
+  );
 
+  ctx.fillStyle=gradient;
 
+  ctx.beginPath();
+  ctx.ellipse(
+    0,0,
+    rx,ry,
+    0,0,Math.PI*2
+  );
 
-    <script>
+  ctx.fill();
 
+  ctx.restore();
+}
 
-        const question =
-            document.getElementById("question");
 
-        const yes =
-            document.getElementById("yes");
+/* ساخت گل */
+function blossom(cx,cy,size){
 
-        const no =
-            document.getElementById("no");
+  const petals=10;
 
-        const secondMessage =
-            document.getElementById("secondMessage");
+  for(let i=0;i<petals;i++){
 
-        const firstMessage =
-            document.getElementById("firstMessage");
+    const angle=i*Math.PI*2/petals;
 
-        const mainPage =
-            document.getElementById("mainPage");
+    petal(
+      cx+Math.cos(angle)*size*.22,
+      cy+Math.sin(angle)*size*.22,
+      size*.32,
+      size*.62,
+      angle+Math.PI/2,
+      .92
+    );
+  }
 
-        const finalScreen =
-            document.getElementById("finalScreen");
 
+  for(let i=0;i<6;i++){
 
-        let stage = 1;
+    const angle=i*Math.PI*2/6+.2;
 
+    petal(
+      cx+Math.cos(angle)*size*.12,
+      cy+Math.sin(angle)*size*.12,
+      size*.25,
+      size*.45,
+      angle+Math.PI/2,
+      .98
+    );
+  }
 
 
-        /*
-         * دکمه «نه» فرار می‌کند
-         */
+  /* مرکز گل */
 
-        function escapeNo() {
+  const center=ctx.createRadialGradient(
+    cx,cy,1,
+    cx,cy,size*.18
+  );
 
-            const buttonWidth =
-                no.offsetWidth;
+  center.addColorStop(0,"#ffd66d");
+  center.addColorStop(1,"#d76b39");
 
-            const buttonHeight =
-                no.offsetHeight;
+  ctx.fillStyle=center;
 
+  ctx.beginPath();
+  ctx.arc(cx,cy,size*.15,0,Math.PI*2);
+  ctx.fill();
 
-            const maxX =
-                window.innerWidth
-                - buttonWidth
-                - 20;
 
+  /* پرچم‌های گل */
 
-            const maxY =
-                window.innerHeight
-                - buttonHeight
-                - 20;
+  for(let i=0;i<18;i++){
 
+    const angle=i*Math.PI*2/18;
+    const r=size*.18;
 
-            const x =
-                Math.random() * maxX;
+    ctx.fillStyle="#ffe89a";
 
+    ctx.beginPath();
 
-            const y =
-                Math.random() * maxY;
+    ctx.arc(
+      cx+Math.cos(angle)*r,
+      cy+Math.sin(angle)*r,
+      2.2,
+      0,
+      Math.PI*2
+    );
 
+    ctx.fill();
+  }
+}
 
-            no.style.position = "fixed";
 
-            no.style.left =
-                Math.max(10, x) + "px";
+/* انیمیشن */
 
-            no.style.top =
-                Math.max(10, y) + "px";
+function animate(){
 
-            no.style.zIndex = "9999";
-        }
+  t+=.016;
 
+  ctx.clearRect(0,0,W,H);
 
 
-        /*
-         * کامپیوتر
-         */
+  /* نور پشت گل */
 
-        no.addEventListener(
-            "mouseenter",
-            escapeNo
-        );
+  const glow=ctx.createRadialGradient(
+    W/2,H*.38,10,
+    W/2,H*.38,H*.65
+  );
 
+  glow.addColorStop(
+    0,
+    "rgba(255,95,157,.11)"
+  );
 
+  glow.addColorStop(
+    1,
+    "rgba(0,0,0,0)"
+  );
 
-        /*
-         * موبایل
-         */
+  ctx.fillStyle=glow;
+  ctx.fillRect(0,0,W,H);
 
-        no.addEventListener(
-            "touchstart",
-            function(event) {
 
-                event.preventDefault();
+  /* قلب‌های متحرک */
 
-                escapeNo();
+  hearts.forEach(h=>{
 
-            },
-            {
-                passive: false
-            }
-        );
+    h.y-=h.speed;
+    h.a+=.008;
 
+    if(h.y<-30){
+      h.y=H+30;
+      h.x=Math.random()*W;
+    }
 
+    heart(
+      h.x,
+      h.y,
+      h.s,
+      Math.sin(h.a)*.2
+    );
+  });
 
-        /*
-         * اگر به هر شکلی کلیک شد
-         */
 
-        no.addEventListener(
-            "click",
-            function(event) {
+  stem();
 
-                event.preventDefault();
 
-                escapeNo();
+  /* گل‌ها */
 
-            }
-        );
+  const sway=Math.sin(t)*3;
 
+  blossom(W*.5+sway,H*.29,58);
+  blossom(W*.39+sway,H*.43,42);
+  blossom(W*.62+sway,H*.45,47);
+  blossom(W*.48+sway,H*.57,37);
 
 
-        /*
-         * دکمه موافقم
-         */
+  requestAnimationFrame(animate);
+}
 
-        yes.addEventListener(
-            "click",
-            function() {
+animate();
 
-
-                /*
-                 * سوال اول
-                 */
-
-                if (stage === 1) {
-
-                    stage = 2;
-
-
-                    question.innerHTML =
-                        "نظرات حمید رو قبول داری؟";
-
-
-                    yes.innerHTML =
-                        "موافقم";
-
-
-                    no.innerHTML =
-                        "نه";
-
-
-                    /*
-                     * نمایش جمله دوم
-                     */
-
-                    firstMessage.style.display =
-                        "none";
-
-
-                    secondMessage.style.display =
-                        "block";
-
-
-                    /*
-                     * برگرداندن دکمه نه
-                     */
-
-                    no.style.position =
-                        "relative";
-
-                    no.style.left = "";
-
-                    no.style.top = "";
-
-                    no.style.zIndex = "";
-
-
-                }
-
-
-                /*
-                 * سوال دوم
-                 */
-
-                else {
-
-                    showFinal();
-
-                }
-
-            }
-        );
-
-
-
-        /*
-         * پایان
-         */
-
-        function showFinal() {
-
-            mainPage.style.display =
-                "none";
-
-
-            finalScreen.style.display =
-                "flex";
-
-        }
-
-
-    </script>
-
+</script>
 
 </body>
 </html>
