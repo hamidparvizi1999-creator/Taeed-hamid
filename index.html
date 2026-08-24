@@ -7,949 +7,680 @@
 
 <style>
 *{
-  box-sizing:border-box;
+    box-sizing:border-box;
 }
 
 html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#070611;
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
 }
 
 body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            #35162f 0%,
+            #170d23 45%,
+            #05050b 100%
+        );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-family:Tahoma,Arial,sans-serif;
 }
 
-canvas{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-}
+/* متن */
 
 .message{
-  position:fixed;
-  z-index:20;
-  top:7%;
-  width:100%;
-  text-align:center;
+    position:fixed;
+    top:7%;
+    width:100%;
+    text-align:center;
+    z-index:20;
 
-  color:#fff;
-  font-family:Tahoma,Arial,sans-serif;
-  font-size:clamp(22px,5vw,40px);
+    color:white;
+    font-size:clamp(23px,5vw,40px);
 
-  text-shadow:
-    0 0 8px #ff477d,
-    0 0 18px #ff174f,
-    0 0 35px #ff174f;
+    text-shadow:
+        0 0 8px #ff668f,
+        0 0 20px #ff2865,
+        0 0 35px #ff174f;
 
-  animation:pulse 2.5s infinite;
+    animation:textGlow 2.5s infinite;
 }
 
-@keyframes pulse{
-  0%,100%{
-    transform:scale(1);
-  }
+@keyframes textGlow{
 
-  50%{
-    transform:scale(1.06);
-  }
+    0%,100%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.06);
+    }
 }
+
+
+/* ستاره‌ها */
+
+.stars{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+}
+
+.star{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:#ffb5d0;
+    border-radius:50%;
+    box-shadow:0 0 10px #ff6c9b;
+    animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+
+    from{
+        opacity:.2;
+        transform:scale(.6);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1.4);
+    }
+}
+
+
+/* صحنه گل */
+
+.scene{
+    position:relative;
+    width:100%;
+    height:100%;
+}
+
+
+/* ساقه */
+
+.stem{
+    position:absolute;
+
+    left:50%;
+    top:47%;
+
+    width:11px;
+    height:0;
+
+    transform:
+        translateX(-50%)
+        rotate(1deg);
+
+    transform-origin:top;
+
+    background:
+        linear-gradient(
+            90deg,
+            #174b28,
+            #55a447,
+            #174b28
+        );
+
+    border-radius:20px;
+
+    box-shadow:
+        0 0 10px #3d8c42;
+
+    animation:growStem 7s ease-out forwards;
+}
+
+@keyframes growStem{
+
+    0%{
+        height:0;
+    }
+
+    100%{
+        height:43vh;
+    }
+}
+
+
+/* برگ */
+
+.leaf{
+    position:absolute;
+
+    left:50%;
+    top:67%;
+
+    width:130px;
+    height:48px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #438c3c,
+            #173c24
+        );
+
+    border-radius:
+        100% 0 100% 0;
+
+    transform-origin:left center;
+
+    opacity:0;
+
+    animation:
+        leafAppear 3s 5s forwards;
+}
+
+.leaf.left{
+    transform:
+        translateX(-5px)
+        rotate(-28deg);
+}
+
+.leaf.right{
+    top:74%;
+
+    transform:
+        translateX(-115px)
+        rotate(28deg)
+        scaleX(-1);
+
+    animation-delay:6s;
+}
+
+@keyframes leafAppear{
+
+    from{
+        opacity:0;
+        transform:
+            translateX(-5px)
+            rotate(-28deg)
+            scale(.2);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateX(-5px)
+            rotate(-28deg)
+            scale(1);
+    }
+}
+
+
+/* گل */
+
+.flower{
+    position:absolute;
+
+    left:50%;
+    top:35%;
+
+    width:300px;
+    height:300px;
+
+    transform:
+        translate(-50%,-50%);
+
+}
+
+
+/* گلبرگ‌ها */
+
+.petal{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:105px;
+    height:205px;
+
+    transform-origin:
+        50% 100%;
+
+    border-radius:
+        70% 70% 35% 35%;
+
+    opacity:0;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 75%,
+            #fff8fb 0%,
+            #ffd7e6 30%,
+            #ff8fb4 72%,
+            #e83d70 100%
+        );
+
+    box-shadow:
+        inset 0 -10px 20px rgba(170,20,70,.18),
+        0 0 15px rgba(255,80,140,.25);
+
+    transform:
+        translate(-50%,-100%)
+        rotate(var(--angle))
+        scaleY(.05);
+
+    animation:
+        bloom 5s var(--delay) cubic-bezier(.2,.8,.2,1)
+        forwards;
+}
+
+
+/*
+ خطوط طبیعی روی گلبرگ
+*/
+
+.petal::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+    top:15px;
+
+    width:3px;
+    height:170px;
+
+    transform:translateX(-50%);
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(180,30,80,0),
+            rgba(190,30,80,.25),
+            rgba(180,30,80,0)
+        );
+
+    border-radius:50%;
+}
+
+
+/* شکوفا شدن */
+
+@keyframes bloom{
+
+    0%{
+        opacity:0;
+        transform:
+            translate(-50%,-100%)
+            rotate(var(--angle))
+            scaleY(.05)
+            scaleX(.35);
+    }
+
+    45%{
+        opacity:1;
+        transform:
+            translate(-50%,-100%)
+            rotate(var(--angle))
+            scaleY(.7)
+            scaleX(.8);
+    }
+
+    100%{
+        opacity:1;
+        transform:
+            translate(-50%,-100%)
+            rotate(var(--angle))
+            scaleY(1)
+            scaleX(1);
+    }
+}
+
+
+/* مرکز گل */
+
+.center{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:55px;
+    height:55px;
+
+    transform:
+        translate(-50%,-50%)
+        scale(0);
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #fff7a8 0%,
+            #ffd83d 35%,
+            #e99b18 70%,
+            #8f4b0c 100%
+        );
+
+    box-shadow:
+        0 0 20px #ffd83d;
+
+    z-index:10;
+
+    animation:
+        centerAppear 3s 9s forwards;
+}
+
+@keyframes centerAppear{
+
+    0%{
+        transform:
+            translate(-50%,-50%)
+            scale(0);
+    }
+
+    70%{
+        transform:
+            translate(-50%,-50%)
+            scale(1.25);
+    }
+
+    100%{
+        transform:
+            translate(-50%,-50%)
+            scale(1);
+    }
+}
+
+
+/* پرچم‌ها / پرچمک‌های لیلیوم */
+
+.stamen{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:4px;
+    height:95px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #efc34a,
+            #8c5218
+        );
+
+    transform-origin:50% 100%;
+
+    opacity:0;
+
+    z-index:11;
+
+    animation:
+        stamens 3s 9.5s forwards;
+}
+
+.stamen::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:-7px;
+    left:-4px;
+
+    width:12px;
+    height:12px;
+
+    border-radius:50%;
+
+    background:#8e4a20;
+
+    box-shadow:
+        0 0 8px #ff9d3d;
+}
+
+@keyframes stamens{
+
+    from{
+        opacity:0;
+        transform:
+            translate(-50%,-100%)
+            rotate(var(--a))
+            scaleY(0);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translate(-50%,-100%)
+            rotate(var(--a))
+            scaleY(1);
+    }
+}
+
+
+/* گرده‌های نورانی */
+
+.pollen{
+    position:absolute;
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    background:#ffd84a;
+
+    box-shadow:
+        0 0 12px #ffd84a;
+
+    opacity:0;
+
+    animation:
+        pollenFloat 5s 10s infinite;
+}
+
+@keyframes pollenFloat{
+
+    0%{
+        opacity:0;
+        transform:translateY(0) scale(.5);
+    }
+
+    20%{
+        opacity:.8;
+    }
+
+    100%{
+        opacity:0;
+        transform:
+            translateY(-90px)
+            translateX(20px)
+            scale(1.2);
+    }
+}
+
+
+/* درخشش نهایی */
+
+.glow{
+    position:absolute;
+
+    left:50%;
+    top:35%;
+
+    width:280px;
+    height:280px;
+
+    transform:
+        translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,80,140,.22),
+            transparent 68%
+        );
+
+    opacity:0;
+
+    animation:
+        finalGlow 4s 11s infinite;
+}
+
+@keyframes finalGlow{
+
+    0%,100%{
+        opacity:.35;
+        transform:
+            translate(-50%,-50%)
+            scale(.9);
+    }
+
+    50%{
+        opacity:.7;
+        transform:
+            translate(-50%,-50%)
+            scale(1.15);
+    }
+}
+
 </style>
 </head>
 
 <body>
 
+<div class="stars" id="stars"></div>
+
 <div class="message">
-  همچنان برای چشات ❤️
+    همچنان برای چشات ❤️
 </div>
 
-<canvas id="canvas"></canvas>
+<div class="scene">
+
+    <div class="glow"></div>
+
+    <div class="stem"></div>
+
+    <div class="leaf left"></div>
+    <div class="leaf right"></div>
+
+    <div class="flower">
+
+        <!-- گلبرگ‌های لیلیوم -->
+
+        <div class="petal"
+             style="--angle:0deg;--delay:1s;"></div>
+
+        <div class="petal"
+             style="--angle:60deg;--delay:2s;"></div>
+
+        <div class="petal"
+             style="--angle:120deg;--delay:3s;"></div>
+
+        <div class="petal"
+             style="--angle:180deg;--delay:4s;"></div>
+
+        <div class="petal"
+             style="--angle:240deg;--delay:5s;"></div>
+
+        <div class="petal"
+             style="--angle:300deg;--delay:6s;"></div>
+
+
+        <!-- پرچم‌ها -->
+
+        <div class="stamen"
+             style="--a:0deg;"></div>
+
+        <div class="stamen"
+             style="--a:45deg;"></div>
+
+        <div class="stamen"
+             style="--a:90deg;"></div>
+
+        <div class="stamen"
+             style="--a:135deg;"></div>
+
+        <div class="stamen"
+             style="--a:180deg;"></div>
+
+        <div class="stamen"
+             style="--a:225deg;"></div>
+
+        <div class="stamen"
+             style="--a:270deg;"></div>
+
+        <div class="stamen"
+             style="--a:315deg;"></div>
+
+
+        <div class="center"></div>
+
+    </div>
+
+</div>
+
 
 <script>
 
-const canvas =
-document.getElementById("canvas");
+/* ستاره‌ها */
 
-const ctx =
-canvas.getContext("2d");
+const stars=
+document.getElementById("stars");
 
-let W,H;
+for(let i=0;i<90;i++){
 
-function resize(){
+    const star=
+    document.createElement("div");
 
-  W=canvas.width=window.innerWidth;
-  H=canvas.height=window.innerHeight;
+    star.className="star";
 
-}
+    star.style.left=
+        Math.random()*100+"%";
 
-resize();
+    star.style.top=
+        Math.random()*100+"%";
 
-window.addEventListener(
-  "resize",
-  resize
-);
+    star.style.animationDelay=
+        Math.random()*3+"s";
 
+    star.style.opacity=
+        Math.random();
 
-/* =================================================
-   قلب اصلی
-================================================= */
-
-function heart(t){
-
-  const x =
-    16 * Math.pow(Math.sin(t),3);
-
-  const y =
-    13*Math.cos(t)
-    -5*Math.cos(2*t)
-    -2*Math.cos(3*t)
-    -Math.cos(4*t);
-
-  return {
-    x:x,
-    y:-y
-  };
+    stars.appendChild(star);
 }
 
 
-/* =================================================
-   نقطه روی قلب
-================================================= */
+/* گرده‌های نورانی */
 
-function getPoint(t,scale){
+for(let i=0;i<18;i++){
 
-  const p=heart(t);
+    const pollen=
+    document.createElement("div");
 
-  return {
-    x:W/2+p.x*scale,
-    y:H/2+p.y*scale
-  };
+    pollen.className="pollen";
 
+    pollen.style.left=
+        (45+Math.random()*10)+"%";
+
+    pollen.style.top=
+        (30+Math.random()*15)+"%";
+
+    pollen.style.animationDelay=
+        (10+Math.random()*5)+"s";
+
+    document.querySelector(".scene")
+        .appendChild(pollen);
 }
-
-
-/* =================================================
-   پس زمینه
-================================================= */
-
-const stars=[];
-
-for(let i=0;i<120;i++){
-
-  stars.push({
-
-    x:Math.random()*W,
-    y:Math.random()*H,
-
-    r:
-      .4+
-      Math.random()*1.7,
-
-    phase:
-      Math.random()*Math.PI*2
-
-  });
-
-}
-
-
-const littleHearts=[];
-
-for(let i=0;i<30;i++){
-
-  littleHearts.push({
-
-    x:Math.random()*W,
-    y:Math.random()*H,
-
-    size:
-      4+
-      Math.random()*10,
-
-    speed:
-      .15+
-      Math.random()*.45,
-
-    phase:
-      Math.random()*10
-
-  });
-
-}
-
-
-function drawBackground(){
-
-  const gradient=
-    ctx.createRadialGradient(
-      W/2,
-      H*.45,
-      10,
-      W/2,
-      H*.45,
-      Math.max(W,H)*.8
-    );
-
-  gradient.addColorStop(
-    0,
-    "#3b1737"
-  );
-
-  gradient.addColorStop(
-    .45,
-    "#191027"
-  );
-
-  gradient.addColorStop(
-    1,
-    "#05050b"
-  );
-
-  ctx.fillStyle=gradient;
-
-  ctx.fillRect(
-    0,
-    0,
-    W,
-    H
-  );
-
-
-  stars.forEach(s=>{
-
-    s.phase+=.015;
-
-    const alpha=
-      .25+
-      Math.sin(s.phase)*.22;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      s.x,
-      s.y,
-      s.r,
-      0,
-      Math.PI*2
-    );
-
-    ctx.fillStyle=
-      `rgba(255,145,195,${alpha})`;
-
-    ctx.fill();
-
-  });
-
-}
-
-
-/* =================================================
-   قلب‌های شناور
-================================================= */
-
-function drawSmallHeart(x,y,size){
-
-  ctx.save();
-
-  ctx.translate(x,y);
-
-  ctx.beginPath();
-
-  ctx.moveTo(
-    0,
-    size*.4
-  );
-
-  ctx.bezierCurveTo(
-    -size,
-    -size*.3,
-    -size*.7,
-    -size,
-    0,
-    -size*.4
-  );
-
-  ctx.bezierCurveTo(
-    size*.7,
-    -size,
-    size,
-    -size*.3,
-    0,
-    size*.4
-  );
-
-  ctx.fillStyle=
-    "rgba(255,65,135,.20)";
-
-  ctx.shadowBlur=12;
-
-  ctx.shadowColor="#ff277d";
-
-  ctx.fill();
-
-  ctx.restore();
-
-}
-
-
-function drawLittleHearts(){
-
-  littleHearts.forEach(h=>{
-
-    h.y-=h.speed;
-    h.phase+=.02;
-
-    if(h.y<-30){
-
-      h.y=H+30;
-      h.x=Math.random()*W;
-
-    }
-
-    drawSmallHeart(
-      h.x+
-      Math.sin(h.phase)*3,
-
-      h.y,
-
-      h.size
-    );
-
-  });
-
-}
-
-
-/* =================================================
-   ساخت مسیرهای دو رشته
-================================================= */
-
-function createStrand(
-  direction,
-  scale,
-  phase
-){
-
-  const points=[];
-
-  const count=1600;
-
-  /*
-     شدت پیچش دو رشته
-  */
-
-  const weaveSize=
-    Math.max(
-      3.5,
-      scale*.55
-    );
-
-  /*
-     تعداد بافت‌ها
-  */
-
-  const weaveCount=15;
-
-
-  for(let i=0;i<=count;i++){
-
-    let u=i/count;
-
-    /*
-      جهت حرکت:
-      قرمز از پایین به راست
-      آبی از پایین به چپ
-    */
-
-    let t;
-
-    if(direction===1){
-
-      t=
-        -Math.PI+
-        u*Math.PI*2;
-
-    }else{
-
-      t=
-        Math.PI-
-        u*Math.PI*2;
-
-    }
-
-
-    /*
-      موجی که باعث می‌شود
-      دو رشته دور هم بپیچند
-    */
-
-    const wave=
-      Math.sin(
-        u*Math.PI*2*weaveCount+
-        phase
-      );
-
-
-    /*
-      برای به دست آوردن عمود
-      مسیر قلب
-    */
-
-    const p1=
-      getPoint(t,scale);
-
-    const p2=
-      getPoint(t+.002,scale);
-
-
-    let dx=
-      p2.x-p1.x;
-
-    let dy=
-      p2.y-p1.y;
-
-
-    const length=
-      Math.sqrt(
-        dx*dx+
-        dy*dy
-      ) || 1;
-
-
-    /*
-      بردار عمود
-    */
-
-    const nx=
-      -dy/length;
-
-    const ny=
-      dx/length;
-
-
-    points.push({
-
-      x:
-        p1.x+
-        nx*
-        weaveSize*
-        wave,
-
-      y:
-        p1.y+
-        ny*
-        weaveSize*
-        wave,
-
-      t:t,
-
-      u:u,
-
-      wave:wave
-
-    });
-
-  }
-
-  return points;
-
-}
-
-
-/* =================================================
-   رسم رشته
-================================================= */
-
-function drawFullStrand(
-  points,
-  visible,
-  color,
-  width
-){
-
-  const end=
-    Math.floor(
-      points.length*
-      visible
-    );
-
-  if(end<2)
-    return;
-
-
-  ctx.beginPath();
-
-
-  for(let i=0;i<end;i++){
-
-    const p=points[i];
-
-    if(i===0){
-
-      ctx.moveTo(
-        p.x,
-        p.y
-      );
-
-    }else{
-
-      ctx.lineTo(
-        p.x,
-        p.y
-      );
-
-    }
-
-  }
-
-
-  ctx.strokeStyle=color;
-
-  ctx.lineWidth=width;
-
-  ctx.lineCap="round";
-
-  ctx.lineJoin="round";
-
-  ctx.shadowBlur=18;
-
-  ctx.shadowColor=color;
-
-  ctx.stroke();
-
-  ctx.shadowBlur=0;
-
-}
-
-
-/* =================================================
-   ایجاد حالت «روی هم / زیر هم»
-================================================= */
-
-function drawIntersections(
-  red,
-  blue,
-  visible,
-  width,
-  scale
-){
-
-  const count=
-    Math.min(
-      red.length,
-      blue.length
-    );
-
-
-  /*
-    نقاطی که رشته‌ها
-    با هم می‌بافند
-  */
-
-  const weaveCount=15;
-
-
-  for(let n=0;n<weaveCount;n++){
-
-    /*
-      محل برخوردها
-    */
-
-    const center =
-      (n+.5)/weaveCount;
-
-
-    /*
-      محدوده کوچک اطراف برخورد
-    */
-
-    const range=.012;
-
-
-    const rStart=
-      Math.floor(
-        (center-range)*
-        count
-      );
-
-    const rEnd=
-      Math.floor(
-        (center+range)*
-        count
-      );
-
-
-    if(rStart<0 || rStart>=count)
-      continue;
-
-
-    /*
-      یک بار قرمز روی آبی
-      و بار بعد آبی روی قرمز
-    */
-
-    const redOnTop=
-      n%2===0;
-
-
-    const top=
-      redOnTop
-      ? red
-      : blue;
-
-
-    const color=
-      redOnTop
-      ? "#ed0038"
-      : "#075bea";
-
-
-    /*
-      فقط اگر این قسمت
-      قبلاً ساخته شده باشد
-    */
-
-    if(
-      center>visible
-    )
-      continue;
-
-
-    ctx.save();
-
-    ctx.beginPath();
-
-
-    for(
-      let i=rStart;
-      i<=rEnd &&
-      i<top.length;
-      i++
-    ){
-
-      const p=top[i];
-
-      if(i===rStart){
-
-        ctx.moveTo(
-          p.x,
-          p.y
-        );
-
-      }else{
-
-        ctx.lineTo(
-          p.x,
-          p.y
-        );
-
-      }
-
-    }
-
-
-    ctx.strokeStyle=color;
-
-    ctx.lineWidth=
-      width+2.5;
-
-    ctx.lineCap="round";
-
-    ctx.shadowBlur=20;
-
-    ctx.shadowColor=color;
-
-    ctx.stroke();
-
-    ctx.restore();
-
-  }
-
-}
-
-
-/* =================================================
-   نقطه نورانی سر هر رشته
-================================================= */
-
-function drawHead(
-  points,
-  progress,
-  color
-){
-
-  const index=
-    Math.min(
-      points.length-1,
-      Math.floor(
-        progress*
-        (points.length-1)
-      )
-    );
-
-
-  const p=
-    points[index];
-
-  if(!p)
-    return;
-
-
-  ctx.save();
-
-  ctx.beginPath();
-
-  ctx.arc(
-    p.x,
-    p.y,
-    5,
-    0,
-    Math.PI*2
-  );
-
-  ctx.fillStyle="#fff";
-
-  ctx.shadowBlur=30;
-
-  ctx.shadowColor=color;
-
-  ctx.fill();
-
-  ctx.restore();
-
-}
-
-
-/* =================================================
-   شروع
-================================================= */
-
-const startTime=
-performance.now();
-
-
-/*
-   قلب در 14 ثانیه
-*/
-
-const DRAW_TIME=
-14000;
-
-
-/* =================================================
-   انیمیشن
-================================================= */
-
-function animate(now){
-
-  drawBackground();
-
-  drawLittleHearts();
-
-
-  /*
-     میزان پیشرفت
-  */
-
-  let progress=
-    (now-startTime)/
-    DRAW_TIME;
-
-
-  progress=
-    Math.min(
-      progress,
-      1
-    );
-
-
-  /*
-     حرکت نرم
-  */
-
-  const smooth=
-    progress*
-    progress*
-    (3-2*progress);
-
-
-  /*
-     اندازه قلب
-  */
-
-  const scale=
-    Math.min(W,H)/42;
-
-
-  /*
-     دو رشته مستقل
-  */
-
-  const red=
-    createStrand(
-      1,
-      scale,
-      0
-    );
-
-
-  const blue=
-    createStrand(
-      -1,
-      scale,
-      Math.PI
-    );
-
-
-  const width=
-    Math.max(
-      7,
-      scale*.78
-    );
-
-
-  /*
-     اول رشته‌ها را
-     جداگانه رسم می‌کنیم
-  */
-
-  drawFullStrand(
-    red,
-    smooth,
-    "#ed0038",
-    width
-  );
-
-
-  drawFullStrand(
-    blue,
-    smooth,
-    "#075bea",
-    width
-  );
-
-
-  /*
-     حالا نقاط درهم‌تنیدگی
-     را روی آن‌ها می‌کشیم
-  */
-
-  drawIntersections(
-    red,
-    blue,
-    smooth,
-    width,
-    scale
-  );
-
-
-  /*
-     سر حرکت هر دو رشته
-  */
-
-  drawHead(
-    red,
-    smooth,
-    "#ed0038"
-  );
-
-
-  drawHead(
-    blue,
-    smooth,
-    "#075bea"
-  );
-
-
-  /*
-     بعد از کامل شدن،
-     درخشش آرام
-  */
-
-  if(progress>=1){
-
-    const glow=
-      .35+
-      Math.sin(now/450)*.15;
-
-
-    ctx.save();
-
-    ctx.globalAlpha=glow;
-
-    /*
-       هاله قرمز
-    */
-
-    ctx.beginPath();
-
-    red.forEach((p,i)=>{
-
-      if(i===0)
-        ctx.moveTo(p.x,p.y);
-      else
-        ctx.lineTo(p.x,p.y);
-
-    });
-
-    ctx.strokeStyle=
-      "rgba(255,30,80,.25)";
-
-    ctx.lineWidth=4;
-
-    ctx.shadowBlur=30;
-
-    ctx.shadowColor="#ff174f";
-
-    ctx.stroke();
-
-
-    /*
-       هاله آبی
-    */
-
-    ctx.beginPath();
-
-    blue.forEach((p,i)=>{
-
-      if(i===0)
-        ctx.moveTo(p.x,p.y);
-      else
-        ctx.lineTo(p.x,p.y);
-
-    });
-
-    ctx.strokeStyle=
-      "rgba(20,90,255,.25)";
-
-    ctx.lineWidth=4;
-
-    ctx.shadowBlur=30;
-
-    ctx.shadowColor="#075bea";
-
-    ctx.stroke();
-
-    ctx.restore();
-
-  }
-
-
-  requestAnimationFrame(
-    animate
-  );
-
-}
-
-
-requestAnimationFrame(
-  animate
-);
 
 </script>
 
